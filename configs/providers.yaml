@@ -1,0 +1,14 @@
+krx:
+  enabled: true
+  mode: placeholder
+  TODO: "Wire verified KRX endpoints for instrument master, daily prices, and index daily"
+
+kis:
+  enabled: true
+  mode: placeholder
+  TODO: "Wire official market calendar endpoint with holiday accuracy"
+
+dart:
+  enabled: false
+  mode: disabled
+  TODO: "Corporate actions and disclosures integration in later phase"

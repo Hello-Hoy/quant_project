@@ -1,0 +1,15 @@
+feature_set_name: core_v1
+benchmark_family: KOSPI
+
+lookbacks:
+  ret_5d: 5
+  ret_20d: 20
+  ret_60d: 60
+  vol_20d: 20
+  adv_20d: 20
+  breakout_20d: 20
+
+inputs:
+  adjusted_price_required: true
+  raw_price_required: true
+  universe_snapshot_required: true

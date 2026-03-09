@@ -1,0 +1,24 @@
+app:
+  name: quant-project
+  env: dev
+  timezone: Asia/Seoul
+  log_level: INFO
+
+defaults:
+  universe_name: core_equity_etf
+  feature_set_name: core_v1
+
+pipelines:
+  eod:
+    enabled: true
+    steps:
+      - sync_market_calendar
+      - sync_instrument_master
+      - ingest_daily_price_raw
+      - ingest_index_daily
+      - validate_daily_market_data
+      - build_price_adjustment_factor
+      - build_daily_price_adjusted
+      - build_universe_snapshot
+      - build_feature_snapshot
+      - update_research_ready_status

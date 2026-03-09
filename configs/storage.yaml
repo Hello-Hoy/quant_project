@@ -1,0 +1,14 @@
+postgres:
+  schema: public
+
+parquet:
+  raw_root: data/raw
+  curated_root: data/curated
+  features_root: data/features
+
+  partitions:
+    daily_price_raw: [market_code, year, month]
+    index_daily: [index_family, year, month]
+    daily_price_adjusted: [asset_type, year, month]
+    universe_snapshot: [universe_name, snapshot_date]
+    feature_snapshot: [feature_set_name, snapshot_date]

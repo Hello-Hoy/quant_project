@@ -1,0 +1,12 @@
+universe_name: core_equity_etf
+include_markets: [KOSPI, KOSDAQ]
+include_asset_types: [COMMON, ETF]
+exclude_markets_metadata_only: [KONEX]
+
+include_etf: true
+min_turnover: 100000000
+min_price: 1000
+
+rules:
+  require_tradable: true
+  require_listing_status: ACTIVE
