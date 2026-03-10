@@ -20,6 +20,23 @@ class InstrumentRepository:
             )
         )
 
+    def get_preferred_by_symbol(self, symbol: str) -> InstrumentMaster | None:
+        candidates = list(
+            self.session.scalars(
+                select(InstrumentMaster).where(InstrumentMaster.symbol == symbol)
+            )
+        )
+        if not candidates:
+            return None
+
+        def _rank(row: InstrumentMaster) -> tuple[int, int, int]:
+            is_active = 1 if row.listing_status == "ACTIVE" else 0
+            is_tradable = 1 if row.is_tradable else 0
+            is_common = 1 if row.asset_type == "COMMON" else 0
+            return (is_active, is_tradable, is_common)
+
+        return sorted(candidates, key=_rank, reverse=True)[0]
+
     def upsert_instrument(
         self,
         symbol: str,

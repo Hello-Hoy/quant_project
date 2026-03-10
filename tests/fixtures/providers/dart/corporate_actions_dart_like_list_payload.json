@@ -1,0 +1,17 @@
+[
+  {
+    "stock_code": "005930",
+    "report_nm": "cash_dividend",
+    "rcept_dt": "20260301",
+    "bas_dt": "20260310",
+    "stlm_dt": "20260401",
+    "cash_amt": "123.45"
+  },
+  {
+    "stock_code": "000660",
+    "report_name": "stock_split",
+    "rcept_dt": "20260302",
+    "bas_dt": "20260311",
+    "split_ratio": "2.0"
+  }
+]

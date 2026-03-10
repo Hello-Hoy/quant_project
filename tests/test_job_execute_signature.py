@@ -8,6 +8,7 @@ from quant.jobs.build_price_adjustment_factor_job import BuildPriceAdjustmentFac
 from quant.jobs.build_universe_snapshot_job import BuildUniverseSnapshotJob
 from quant.jobs.ingest_daily_price_raw_job import IngestDailyPriceRawJob
 from quant.jobs.ingest_index_daily_job import IngestIndexDailyJob
+from quant.jobs.sync_corporate_action_events_job import SyncCorporateActionEventsJob
 from quant.jobs.sync_instrument_master_job import SyncInstrumentMasterJob
 from quant.jobs.sync_market_calendar_job import SyncMarketCalendarJob
 from quant.jobs.update_research_ready_status_job import UpdateResearchReadyStatusJob
@@ -21,6 +22,7 @@ def test_all_jobs_share_execute_signature() -> None:
     job_types = [
         SyncMarketCalendarJob,
         SyncInstrumentMasterJob,
+        SyncCorporateActionEventsJob,
         IngestDailyPriceRawJob,
         IngestIndexDailyJob,
         ValidateDailyMarketDataJob,

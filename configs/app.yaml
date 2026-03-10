@@ -8,6 +8,12 @@ defaults:
   universe_name: core_equity_etf
   feature_set_name: core_v1
 
+readiness:
+  require_corporate_action_sync_preflight: true
+
+catchup:
+  include_unsynced_corporate_action_dates_default: false
+
 pipelines:
   eod:
     enabled: true

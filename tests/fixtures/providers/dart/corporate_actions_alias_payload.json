@@ -1,0 +1,17 @@
+[
+  {
+    "stock_code": "005930",
+    "action_type": "cash_dividend",
+    "disclosure_date": "2026-03-01",
+    "ex_dividend_date": "2026-03-10",
+    "payment_date": "2026-04-01",
+    "amount": "123.45"
+  },
+  {
+    "stock_code": "000660",
+    "action_type": "stock_split",
+    "disclosure_date": "2026-03-02",
+    "ex_dividend_date": "2026-03-11",
+    "ratio": "2.0"
+  }
+]

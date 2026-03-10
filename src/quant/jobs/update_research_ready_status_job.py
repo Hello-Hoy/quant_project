@@ -3,6 +3,7 @@ from __future__ import annotations
 from sqlalchemy.orm import Session
 
 from quant.core.enums import RunStatus
+from quant.core.metadata import build_preflight_metadata
 from quant.core.result import JobResult
 from quant.jobs.base import BaseJob
 from quant.services.readiness.research_ready_service import ResearchReadyService
@@ -24,6 +25,12 @@ class UpdateResearchReadyStatusJob(BaseJob):
         service = ResearchReadyService(session=session)
         result = service.update(target_date=target_date)
         status = RunStatus.SUCCESS if result.research_ready else RunStatus.WARNING
+        preflight_metadata = build_preflight_metadata(
+            check_name="sync_corporate_action_events",
+            is_ready=result.corporate_action_sync_ready,
+            status=result.corporate_action_sync_status,
+            target_date=target_date,
+        )
         return JobResult(
             self.job_name,
             status,
@@ -38,6 +45,10 @@ class UpdateResearchReadyStatusJob(BaseJob):
                 "validated": result.validated,
                 "adjusted_ready": result.adjusted_ready,
                 "feature_ready": result.feature_ready,
+                "corporate_action_sync_ready": result.corporate_action_sync_ready,
+                "corporate_action_sync_status": result.corporate_action_sync_status,
+                "require_corporate_action_sync_preflight": result.require_corporate_action_sync_preflight,
                 "research_ready": result.research_ready,
+                **preflight_metadata,
             },
         )

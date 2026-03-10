@@ -1,8 +1,12 @@
 from __future__ import annotations
 from dataclasses import dataclass
+
 from sqlalchemy.orm import Session
+
+from quant.bootstrap.config_loader import ConfigLoader
 from quant.providers.krx.instrument_provider import KrxInstrumentProvider
 from quant.storage.db.repositories.instrument_repository import InstrumentRepository
+
 
 @dataclass
 class InstrumentMasterSyncResult:
@@ -10,15 +14,34 @@ class InstrumentMasterSyncResult:
     etf_count: int
     message: str | None = None
 
+
 class InstrumentMasterService:
-    def __init__(self, session: Session, provider: KrxInstrumentProvider | None = None, repository: InstrumentRepository | None = None) -> None:
-        self.provider = provider or KrxInstrumentProvider()
+    def __init__(
+        self,
+        session: Session,
+        provider: KrxInstrumentProvider | None = None,
+        repository: InstrumentRepository | None = None,
+        config_loader: ConfigLoader | None = None,
+    ) -> None:
+        self.config_loader = config_loader or ConfigLoader()
+        if provider is None:
+            runtime = self.config_loader.get_provider_runtime_config("krx")
+            provider = KrxInstrumentProvider(**runtime)
+        self.provider = provider
         self.repository = repository or InstrumentRepository(session)
 
     def sync(self, target_date: str | None = None, force: bool = False) -> InstrumentMasterSyncResult:
+        _ = force
         rows = self.provider.fetch_instruments(target_date=target_date)
         if not rows:
-            return InstrumentMasterSyncResult(0, 0, f"No instrument rows returned for target_date={target_date}")
+            return InstrumentMasterSyncResult(
+                0,
+                0,
+                self.provider.unavailable_message(
+                    capability="instrument master sync",
+                    context=f"target_date={target_date}",
+                ),
+            )
 
         total_count = 0
         etf_count = 0
@@ -41,4 +64,8 @@ class InstrumentMasterService:
                     management_company=row.management_company, expense_ratio=row.expense_ratio
                 )
             total_count += 1
-        return InstrumentMasterSyncResult(total_count, etf_count, f"Instrument master synced for target_date={target_date}")
+        return InstrumentMasterSyncResult(
+            total_count,
+            etf_count,
+            f"Instrument master synced for target_date={target_date}",
+        )

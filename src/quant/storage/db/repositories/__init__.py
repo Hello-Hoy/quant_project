@@ -1,4 +1,5 @@
 from quant.storage.db.repositories.calendar_repository import CalendarRepository
+from quant.storage.db.repositories.corporate_action_event_repository import CorporateActionEventRepository
 from quant.storage.db.repositories.ingestion_run_repository import IngestionRunRepository
 from quant.storage.db.repositories.instrument_repository import InstrumentRepository
 from quant.storage.db.repositories.price_adjustment_factor_repository import PriceAdjustmentFactorRepository
@@ -7,6 +8,7 @@ from quant.storage.db.repositories.validation_repository import ValidationReposi
 
 __all__ = [
     "CalendarRepository",
+    "CorporateActionEventRepository",
     "IngestionRunRepository",
     "InstrumentRepository",
     "PriceAdjustmentFactorRepository",

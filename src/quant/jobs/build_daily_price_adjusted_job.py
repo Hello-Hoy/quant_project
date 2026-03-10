@@ -22,7 +22,7 @@ class BuildDailyPriceAdjustedJob(BaseJob):
                 metadata={"run_mode": run_mode, "attempt_no": attempt_no},
             )
         service = AdjustedPriceBuilderService(session=session)
-        result = service.build(target_date=target_date, adjustment_version="v0_identity")
+        result = service.build(target_date=target_date, adjustment_version="v1_corporate_action")
         status = RunStatus.SUCCESS if result.row_count > 0 else RunStatus.FAILED
         return JobResult(
             self.job_name,

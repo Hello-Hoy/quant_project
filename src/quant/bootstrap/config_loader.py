@@ -33,6 +33,24 @@ class ConfigLoader:
     def load_provider_config(self) -> dict[str, Any]:
         return self.load_yaml("providers.yaml")
 
+    def get_provider_runtime_config(self, provider_name: str) -> dict[str, Any]:
+        provider_cfg = self.load_provider_config().get(provider_name, {})
+        if not isinstance(provider_cfg, dict):
+            provider_cfg = {}
+        note = provider_cfg.get("TODO")
+        timeout_sec = provider_cfg.get("timeout_sec", 10)
+        endpoints = provider_cfg.get("endpoints", {})
+        if not isinstance(endpoints, dict):
+            endpoints = {}
+        return {
+            "enabled": bool(provider_cfg.get("enabled", True)),
+            "mode": str(provider_cfg.get("mode", "placeholder")),
+            "note": str(note) if note is not None else None,
+            "base_url": str(provider_cfg["base_url"]) if provider_cfg.get("base_url") else None,
+            "timeout_sec": int(timeout_sec),
+            "endpoints": {str(k): str(v) for k, v in endpoints.items() if v is not None},
+        }
+
     def load_storage_config(self) -> dict[str, Any]:
         return self.load_yaml("storage.yaml")
 

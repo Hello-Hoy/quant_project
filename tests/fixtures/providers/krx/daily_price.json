@@ -1,0 +1,44 @@
+[
+  {
+    "trade_date": "2026-03-09",
+    "symbol": "005930",
+    "market_code": "KOSPI",
+    "asset_type": "COMMON",
+    "open": 70000,
+    "high": 71200,
+    "low": 69800,
+    "close": 70900,
+    "volume": 1200000,
+    "turnover": 85000000000,
+    "market_cap": 430000000000000,
+    "shares_outstanding": 6068000000
+  },
+  {
+    "trade_date": "2026-03-09",
+    "symbol": "000660",
+    "market_code": "KOSPI",
+    "asset_type": "COMMON",
+    "open": 178000,
+    "high": 181000,
+    "low": 176500,
+    "close": 180000,
+    "volume": 540000,
+    "turnover": 97000000000,
+    "market_cap": 131000000000000,
+    "shares_outstanding": 728000000
+  },
+  {
+    "trade_date": "2026-03-09",
+    "symbol": "035420",
+    "market_code": "KOSDAQ",
+    "asset_type": "COMMON",
+    "open": 235000,
+    "high": 238000,
+    "low": 233000,
+    "close": 236500,
+    "volume": 220000,
+    "turnover": 52000000000,
+    "market_cap": 39000000000000,
+    "shares_outstanding": 165000000
+  }
+]

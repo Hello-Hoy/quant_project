@@ -34,7 +34,7 @@ class AdjustedPriceBuilderService:
         merged["trade_date"] = pd.to_datetime(merged["trade_date"])
         return merged[merged["trade_date"] == ts].copy()
 
-    def build(self, target_date: str, adjustment_version: str = "v0_identity") -> AdjustedPriceBuildResult:
+    def build(self, target_date: str, adjustment_version: str = "v1_corporate_action") -> AdjustedPriceBuildResult:
         raw_df = self._load_raw_daily_price_df(target_date)
         if raw_df.empty:
             return AdjustedPriceBuildResult(0, adjustment_version, [], f"No raw daily price rows found for {target_date}")

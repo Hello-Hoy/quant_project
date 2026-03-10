@@ -1,0 +1,26 @@
+[
+  {
+    "trade_date": "2026-03-09",
+    "index_code": "1001",
+    "index_name": "KOSPI",
+    "index_family": "KOSPI",
+    "open": 2710.5,
+    "high": 2722.3,
+    "low": 2698.1,
+    "close": 2715.2,
+    "volume": 152000000,
+    "turnover": 8500000000000
+  },
+  {
+    "trade_date": "2026-03-09",
+    "index_code": "2001",
+    "index_name": "KOSDAQ",
+    "index_family": "KOSDAQ",
+    "open": 980.4,
+    "high": 988.1,
+    "low": 975.6,
+    "close": 985.7,
+    "volume": 94000000,
+    "turnover": 4300000000000
+  }
+]

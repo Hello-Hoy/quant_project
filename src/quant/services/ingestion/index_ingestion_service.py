@@ -1,10 +1,14 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
+
 import pandas as pd
 from sqlalchemy.orm import Session
+
+from quant.bootstrap.config_loader import ConfigLoader
 from quant.providers.krx.index_provider import KrxIndexProvider
 from quant.storage.parquet.index_store import IndexStore
+
 
 @dataclass
 class IndexIngestionResult:
@@ -14,14 +18,34 @@ class IndexIngestionResult:
     message: str | None = None
 
 class IndexIngestionService:
-    def __init__(self, session: Session, provider: KrxIndexProvider | None = None, store: IndexStore | None = None) -> None:
-        self.provider = provider or KrxIndexProvider()
+    def __init__(
+        self,
+        session: Session,
+        provider: KrxIndexProvider | None = None,
+        store: IndexStore | None = None,
+        config_loader: ConfigLoader | None = None,
+    ) -> None:
+        _ = session
+        self.config_loader = config_loader or ConfigLoader()
+        if provider is None:
+            runtime = self.config_loader.get_provider_runtime_config("krx")
+            provider = KrxIndexProvider(**runtime)
+        self.provider = provider
         self.store = store or IndexStore()
 
     def ingest(self, target_date: str, force: bool = False) -> IndexIngestionResult:
+        _ = force
         rows = self.provider.fetch_index_daily(target_date=target_date)
         if not rows:
-            return IndexIngestionResult(0, {}, [], f"No index rows returned for {target_date}")
+            return IndexIngestionResult(
+                0,
+                {},
+                [],
+                self.provider.unavailable_message(
+                    capability="index daily ingestion",
+                    context=f"target_date={target_date}",
+                ),
+            )
         normalized_rows = [{
             "trade_date": row.trade_date.isoformat(),
             "index_code": row.index_code, "index_name": row.index_name, "index_family": row.index_family,

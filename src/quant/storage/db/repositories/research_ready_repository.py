@@ -1,6 +1,7 @@
 from __future__ import annotations
 from datetime import date, datetime, timezone
 
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from quant.storage.db.models.ops import ResearchReadyStatus
@@ -49,3 +50,14 @@ class ResearchReadyRepository:
         self.session.add(existing)
         self.session.flush()
         return existing
+
+    def get_status_map_in_range(self, start_date: date, end_date: date) -> dict[date, ResearchReadyStatus]:
+        stmt = (
+            select(ResearchReadyStatus)
+            .where(
+                ResearchReadyStatus.trade_date >= start_date,
+                ResearchReadyStatus.trade_date <= end_date,
+            )
+            .order_by(ResearchReadyStatus.trade_date)
+        )
+        return {row.trade_date: row for row in self.session.scalars(stmt)}

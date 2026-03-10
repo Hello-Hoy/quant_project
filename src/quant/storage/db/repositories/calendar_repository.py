@@ -2,6 +2,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 from datetime import date
 
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from quant.storage.db.models.calendar import MarketCalendar
@@ -33,3 +34,15 @@ class CalendarRepository:
 
     def get_by_date(self, trade_date: date) -> MarketCalendar | None:
         return self.session.get(MarketCalendar, trade_date)
+
+    def get_open_dates_in_range(self, start_date: date, end_date: date) -> list[date]:
+        stmt = (
+            select(MarketCalendar.trade_date)
+            .where(
+                MarketCalendar.trade_date >= start_date,
+                MarketCalendar.trade_date <= end_date,
+                MarketCalendar.is_open.is_(True),
+            )
+            .order_by(MarketCalendar.trade_date)
+        )
+        return [value for value in self.session.scalars(stmt)]

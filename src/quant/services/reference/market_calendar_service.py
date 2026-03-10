@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 
 from sqlalchemy.orm import Session
 
+from quant.bootstrap.config_loader import ConfigLoader
 from quant.providers.kis.calendar_provider import KisCalendarProvider
 from quant.storage.db.models.calendar import MarketCalendar
 from quant.storage.db.repositories.calendar_repository import CalendarRepository
@@ -16,8 +17,18 @@ class MarketCalendarSyncResult:
 
 
 class MarketCalendarService:
-    def __init__(self, session: Session, provider: KisCalendarProvider | None = None, repository: CalendarRepository | None = None) -> None:
-        self.provider = provider or KisCalendarProvider()
+    def __init__(
+        self,
+        session: Session,
+        provider: KisCalendarProvider | None = None,
+        repository: CalendarRepository | None = None,
+        config_loader: ConfigLoader | None = None,
+    ) -> None:
+        self.config_loader = config_loader or ConfigLoader()
+        if provider is None:
+            runtime = self.config_loader.get_provider_runtime_config("kis")
+            provider = KisCalendarProvider(**runtime)
+        self.provider = provider
         self.repository = repository or CalendarRepository(session)
 
     def sync(self, target_date: str | None = None, force: bool = False) -> MarketCalendarSyncResult:
@@ -29,6 +40,14 @@ class MarketCalendarService:
             start_date = end_date - timedelta(days=10)
 
         rows = self.provider.fetch_calendar_range(start_date=start_date, end_date=end_date)
+        if not rows:
+            return MarketCalendarSyncResult(
+                row_count=0,
+                message=self.provider.unavailable_message(
+                    capability="market calendar sync",
+                    context=f"range={start_date}~{end_date}",
+                ),
+            )
         now = datetime.now(timezone.utc)
         model_rows = [
             MarketCalendar(

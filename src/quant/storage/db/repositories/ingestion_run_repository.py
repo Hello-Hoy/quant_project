@@ -70,3 +70,43 @@ class IngestionRunRepository:
         run.finished_at = datetime.now(timezone.utc)
         self.session.add(run)
         self.session.flush()
+
+    def get_latest_run_by_job_and_target_date(
+        self,
+        job_name: str,
+        target_date: date,
+    ) -> IngestionRun | None:
+        return self.session.scalar(
+            select(IngestionRun)
+            .where(
+                IngestionRun.job_name == job_name,
+                IngestionRun.target_date == target_date,
+            )
+            .order_by(IngestionRun.ingest_run_id.desc())
+            .limit(1)
+        )
+
+    def get_latest_runs_by_job_in_range(
+        self,
+        job_name: str,
+        start_date: date,
+        end_date: date,
+    ) -> dict[date, IngestionRun]:
+        rows = list(
+            self.session.scalars(
+                select(IngestionRun)
+                .where(
+                    IngestionRun.job_name == job_name,
+                    IngestionRun.target_date >= start_date,
+                    IngestionRun.target_date <= end_date,
+                )
+                .order_by(IngestionRun.target_date, IngestionRun.ingest_run_id.desc())
+            )
+        )
+        out: dict[date, IngestionRun] = {}
+        for row in rows:
+            if row.target_date is None:
+                continue
+            if row.target_date not in out:
+                out[row.target_date] = row
+        return out

@@ -9,6 +9,9 @@ from quant.storage.db.base import Base
 
 class CorporateActionEvent(Base):
     __tablename__ = "corporate_action_event"
+    __table_args__ = (
+        Index("ix_corporate_action_event_instrument_date", "instrument_id", "effective_date", "ex_date"),
+    )
 
     event_id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     instrument_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("instrument_master.instrument_id"), nullable=False)

@@ -1,14 +1,39 @@
 krx:
   enabled: true
   mode: placeholder
+  base_url: null
+  timeout_sec: 10
+  endpoints:
+    instrument_master: ""
+    daily_price: ""
+    index_daily: ""
   TODO: "Wire verified KRX endpoints for instrument master, daily prices, and index daily"
 
 kis:
   enabled: true
   mode: placeholder
+  base_url: null
+  timeout_sec: 10
+  endpoints:
+    calendar_range: ""
   TODO: "Wire official market calendar endpoint with holiday accuracy"
 
 dart:
   enabled: false
   mode: disabled
+  base_url: null
+  timeout_sec: 10
+  endpoints:
+    corporate_actions: ""
+  auth:
+    api_key_param_name: crtfc_key
+    api_key_header_name: null
+  response:
+    status_key: status
+    success_values: ["000"]
+    list_key: list
+  request:
+    start_date_param_name: bgn_de
+    end_date_param_name: end_de
+    date_format: YYYYMMDD
   TODO: "Corporate actions and disclosures integration in later phase"

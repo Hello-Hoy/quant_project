@@ -1,11 +1,15 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
+
 import pandas as pd
 from sqlalchemy.orm import Session
+
+from quant.bootstrap.config_loader import ConfigLoader
 from quant.providers.krx.daily_price_provider import KrxDailyPriceProvider
 from quant.storage.db.repositories.instrument_repository import InstrumentRepository
 from quant.storage.parquet.daily_price_store import DailyPriceStore
+
 
 @dataclass
 class DailyPriceIngestionResult:
@@ -15,15 +19,35 @@ class DailyPriceIngestionResult:
     message: str | None = None
 
 class DailyPriceIngestionService:
-    def __init__(self, session: Session, provider: KrxDailyPriceProvider | None = None, instrument_repository: InstrumentRepository | None = None, store: DailyPriceStore | None = None) -> None:
-        self.provider = provider or KrxDailyPriceProvider()
+    def __init__(
+        self,
+        session: Session,
+        provider: KrxDailyPriceProvider | None = None,
+        instrument_repository: InstrumentRepository | None = None,
+        store: DailyPriceStore | None = None,
+        config_loader: ConfigLoader | None = None,
+    ) -> None:
+        self.config_loader = config_loader or ConfigLoader()
+        if provider is None:
+            runtime = self.config_loader.get_provider_runtime_config("krx")
+            provider = KrxDailyPriceProvider(**runtime)
+        self.provider = provider
         self.instrument_repository = instrument_repository or InstrumentRepository(session)
         self.store = store or DailyPriceStore()
 
     def ingest(self, target_date: str, force: bool = False) -> DailyPriceIngestionResult:
+        _ = force
         rows = self.provider.fetch_daily_prices(target_date=target_date)
         if not rows:
-            return DailyPriceIngestionResult(0, {}, [], f"No daily price rows returned for {target_date}")
+            return DailyPriceIngestionResult(
+                0,
+                {},
+                [],
+                self.provider.unavailable_message(
+                    capability="daily price ingestion",
+                    context=f"target_date={target_date}",
+                ),
+            )
 
         active_instruments = self.instrument_repository.get_active_tradable_instruments()
         symbol_map = {(row.symbol, row.market_code, row.asset_type): row.instrument_id for row in active_instruments}

@@ -1,0 +1,29 @@
+[
+  {
+    "symbol": "005930",
+    "name_kr": "삼성전자",
+    "market_code": "KOSPI",
+    "asset_type": "COMMON",
+    "listing_status": "ACTIVE",
+    "is_tradable": true,
+    "listing_date": "1975-06-11"
+  },
+  {
+    "symbol": "000660",
+    "name_kr": "SK하이닉스",
+    "market_code": "KOSPI",
+    "asset_type": "COMMON",
+    "listing_status": "ACTIVE",
+    "is_tradable": true,
+    "listing_date": "1996-12-26"
+  },
+  {
+    "symbol": "035420",
+    "name_kr": "NAVER",
+    "market_code": "KOSDAQ",
+    "asset_type": "COMMON",
+    "listing_status": "ACTIVE",
+    "is_tradable": true,
+    "listing_date": "2002-10-29"
+  }
+]
